@@ -1,0 +1,34 @@
+# Root config for shared tooling. Per-service deps live in services/*/pyproject.toml.
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["proto/gen", "**/_generated"]
+
+[tool.ruff.lint]
+select = [
+  "E", "F", "W",   # pycodestyle / pyflakes
+  "I",             # isort
+  "B",             # flake8-bugbear
+  "UP",            # pyupgrade
+  "SIM",           # flake8-simplify
+  "RUF",           # ruff-specific
+]
+ignore = [
+  "E501",  # line length handled by formatter
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+extend-exclude = "proto/gen|_generated"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+exclude = ["proto/gen", "_generated"]
