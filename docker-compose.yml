@@ -27,6 +27,19 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+  webapp:
+    build:
+      context: ./services/webapp
+      dockerfile: Dockerfile
+    container_name: ecom-webapp
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - "${WEBAPP_PORT:-8000}:8000"
 
 volumes:
   pg-data:
