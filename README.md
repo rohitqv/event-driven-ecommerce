@@ -1,8 +1,6 @@
 # Event-Driven Real-Time Analytics Platform
 
-A production-grade streaming data platform on **Kafka + Flink + ClickHouse + Kubernetes**, framed as a hybrid e-commerce backend so the data shape is realistic. Runs on a laptop via Docker Compose; deploys to Kubernetes via Helm.
-
-> **Status:** Phase 0 of 9 complete. See [What works today](#what-works-today). See [Roadmap](#roadmap) for the rest.
+A production-grade streaming data platform on **Kafka + Flink + ClickHouse + Kubernetes**, working as a hybrid e-commerce backend so the data shape is realistic. Runs on a laptop via Docker Compose; deploys to Kubernetes via Helm.
 
 ---
 
@@ -10,7 +8,7 @@ A production-grade streaming data platform on **Kafka + Flink + ClickHouse + Kub
 
 This is a portfolio project demonstrating real-world data engineering at meaningful scale. The framing is e-commerce because it produces a natural mix of OLTP writes (orders, inventory), behavioral events (clicks, sessions, carts), and CDC streams — enough variety to exercise every interesting pattern in modern streaming systems.
 
-The technical scope is deliberately broad: change-data-capture, schema evolution, exactly-once processing, stream-stream and stream-table joins, sessionization, windowed aggregations, materialized views, full observability with distributed tracing. Each pattern is implemented in a way that would survive code review at a streaming-first company, not in a tutorial-grade way.
+The technical scope is deliberately broad: change-data-capture, schema evolution, exactly-once processing, stream-stream and stream-table joins, sessionization, windowed aggregations, materialized views, full observability with distributed tracing. Each pattern is implemented in a way that would survive code review at a streaming-first pipeline.
 
 **It runs on one laptop** (Docker Compose + kind) so anyone reviewing it can clone and `make up-all`. The same Helm charts deploy to a real Kubernetes cluster — no cloud-specific gymnastics, so the architecture is portable.
 
@@ -70,34 +68,18 @@ End-to-end streaming patterns covered across the 9 phases:
 
 ## Roadmap
 
-Nine phases, each ends in something demoable. Phase 0 took ~1 week part-time; later phases take 1–2 weeks each.
+Nine steps, each ends in something demoable.
 
-- [x] **Phase 0 — Foundation.** Repo skeleton, Postgres-only Compose, Makefile, pre-commit lint (ruff/black/hadolint/yamllint/conventional-commits), GitHub Actions CI, ADR practice, architecture stub.
-- [ ] **Phase 1 — Webapp + OLTP.** FastAPI + HTMX webapp on Postgres. User-facing writes + behavioral event emission. Async events with sync confirmation pattern.
-- [ ] **Phase 2 — Kafka + Schema Registry + Protobuf.** Kafka cluster, Confluent Schema Registry, Protobuf message definitions, BACKWARD compat enforced in CI.
-- [ ] **Phase 3 — CDC via Debezium.** Postgres logical replication → Debezium → Kafka. Order and inventory mutations flow without dual-writes.
-- [ ] **Phase 4 — Flink jobs.** Four jobs: windowed KPIs (Flink SQL), sessionization (DataStream), funnel join + temporal table join (Table API), CDC fan-out (DataStream). Checkpoints, savepoints, RocksDB state.
-- [ ] **Phase 5 — ClickHouse + sinks.** Layered schema (raw → stage → fct/agg), MergeTree family table types (ReplacingMergeTree for idempotent upserts, AggregatingMergeTree for materialized rollups), projections, TTLs.
-- [ ] **Phase 6 — Grafana dashboards.** Committed JSON dashboards for live KPIs (revenue/min, top categories, session funnels). Dashboards-as-code via provisioning.
-- [ ] **Phase 7 — Kubernetes + Helm.** Move the whole stack to kind via Helm charts. StatefulSets for stateful services, Deployments for stateless, Operators where they earn their keep (Strimzi for Kafka).
-- [ ] **Phase 8 — Full observability.** OpenTelemetry instrumentation end-to-end. Distributed trace from a single user click, through Kafka, through Flink, to ClickHouse insert. Prometheus + Loki + Tempo all wired.
-- [ ] **Phase 9 — Polish, benchmarks, ADRs.** Throughput benchmarks documented in `docs/benchmarks/`. Per-component runbooks in `docs/runbooks/`. Backfill of ADRs for any decisions made informally during earlier phases.
-
----
-
-## What works today
-
-**Phase 0 (Foundation).** Available right now:
-
-- `make up-core` brings up Postgres 16 in Docker, healthy in ~15 seconds.
-- `make psql` opens a `psql` shell to the running database.
-- `make lint` runs the full hook chain (ruff, black, hadolint, yamllint, trailing whitespace, EOF, conventional-commits) via pre-commit.
-- GitHub Actions runs `pre-commit run --all-files` on every PR and every push to `main`.
-- Dependabot configured for `github-actions`, `docker`, and `pip` ecosystems, weekly cadence.
-- ADR practice established with the meta-ADR ([`docs/adr/0000`](docs/adr/0000-record-architecture-decisions.md)) documenting the practice itself; template at [`docs/adr/template.md`](docs/adr/template.md).
-- Architecture overview at [`docs/architecture.md`](docs/architecture.md).
-
-Future phases append to this section as they land. Recruiters / reviewers can read this list to know exactly what they can clone and run today.
+- [x] **Step 0 — Foundation.** Repo skeleton, Postgres-only Compose, Makefile, pre-commit lint (ruff/black/hadolint/yamllint/conventional-commits), GitHub Actions CI, ADR practice, architecture stub.
+- [ ] **Step 1 — Webapp + OLTP.** FastAPI + HTMX webapp on Postgres. User-facing writes + behavioral event emission. Async events with sync confirmation pattern.
+- [ ] **Step 2 — Kafka + Schema Registry + Protobuf.** Kafka cluster, Confluent Schema Registry, Protobuf message definitions, BACKWARD compat enforced in CI.
+- [ ] **Step 3 — CDC via Debezium.** Postgres logical replication → Debezium → Kafka. Order and inventory mutations flow without dual-writes.
+- [ ] **Step 4 — Flink jobs.** Four jobs: windowed KPIs (Flink SQL), sessionization (DataStream), funnel join + temporal table join (Table API), CDC fan-out (DataStream). Checkpoints, savepoints, RocksDB state.
+- [ ] **Step 5 — ClickHouse + sinks.** Layered schema (raw → stage → fct/agg), MergeTree family table types (ReplacingMergeTree for idempotent upserts, AggregatingMergeTree for materialized rollups), projections, TTLs.
+- [ ] **Step 6 — Grafana dashboards.** Committed JSON dashboards for live KPIs (revenue/min, top categories, session funnels). Dashboards-as-code via provisioning.
+- [ ] **Step 7 — Kubernetes + Helm.** Move the whole stack to kind via Helm charts. StatefulSets for stateful services, Deployments for stateless, Operators where they earn their keep (Strimzi for Kafka).
+- [ ] **Step 8 — Full observability.** OpenTelemetry instrumentation end-to-end. Distributed trace from a single user click, through Kafka, through Flink, to ClickHouse insert. Prometheus + Loki + Tempo all wired.
+- [ ] **Step 9 — Polish, benchmarks, ADRs.** Throughput benchmarks documented in `docs/benchmarks/`. Per-component runbooks in `docs/runbooks/`. Backfill of ADRs for any decisions made informally during earlier phases.
 
 ---
 
