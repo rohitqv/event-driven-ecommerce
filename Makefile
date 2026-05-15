@@ -39,3 +39,17 @@ lint: ## Run all linters (pre-commit on all files)
 .PHONY: psql
 psql: ## Open a psql shell to Postgres
 	$(COMPOSE) exec postgres psql -U $${POSTGRES_USER:-ecom} -d $${POSTGRES_DB:-ecom}
+
+.PHONY: up-webapp
+up-webapp: ## Bring up webapp + Postgres
+	@test -f .env || (echo ".env missing — copy .env.example first" && exit 1)
+	$(COMPOSE) up -d --build webapp
+	@$(COMPOSE) ps
+
+.PHONY: webapp-logs
+webapp-logs: ## Tail webapp logs
+	$(COMPOSE) logs -f --tail=100 webapp
+
+.PHONY: webapp-shell
+webapp-shell: ## Open a shell in the webapp container
+	$(COMPOSE) exec webapp /bin/bash
